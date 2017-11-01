@@ -32,7 +32,7 @@ def accept_friends(msg: Message):
     act_member_phone.append(text)
     act_grp.add_members(new_friend, use_invitation=True)
     print('invited')
-    new_friend.send('活动地址: http://t.cn/ROAnHfV (报名已截止)')
+    new_friend.send('''本次报名已截止，届时可前往http://t.cn/RWRgIma观看视频直播''')
 
 
 @bot.register(msg_types=TEXT)
