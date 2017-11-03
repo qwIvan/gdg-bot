@@ -6,11 +6,16 @@ bot = Bot(console_qr=True, cache_path=True)
 print('okok')
 main_grp = None
 act_grp = None
+conv_grps = []
 for g in bot.groups(update=True):
-    if g.self.display_name == 'GDG':
+    if g.self.display_name == '传话bot02':
         act_grp = g
-        break
-else:
+        conv_grps.append(g)
+        print(g)
+    elif g.self.display_name == '传话bot01':
+        conv_grps.append(g)
+        print(g)
+if not act_grp:
     print('act_grp not found')
     sys.exit(333)
 act_member = []
@@ -35,16 +40,14 @@ def accept_friends(msg: Message):
     new_friend.send('''本次活动已截止报名，届时可前往http://t.cn/RWRgIma观看视频直播，或前往http://t.cn/Rl2kDyo观看图文直播''')
 
 
-@bot.register(msg_types=TEXT)
+@bot.register(msg_types=[TEXT,PICTURE])
 def handle_text(msg: Message):
-    if isinstance(msg.sender, Group):
-        # if msg.is_at:
-            # randint = random.randint(1, 2)
-            # if randint == 1:
-                # msg.reply('这里是GDG广州')
-            # else:
-                # msg.reply('请关注GDG广州微信公众号')
-                # msg.reply_image('mpqr.png', mpqr_media_id)
+    if msg.sender in conv_grps:
+        for g in conv_grps:
+            if g != msg.sender:
+                msg.forward(g, prefix=msg.member.name+':')
+                print(msg.member, msg)
+    elif isinstance(msg.sender, Group):
         return
 
     text = msg.text.strip()
